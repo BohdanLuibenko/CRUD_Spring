@@ -16,7 +16,6 @@ import Service.StudentService;
 @EntityScan(basePackageClasses = StudentEntity.class)
 @EnableJpaRepositories(basePackageClasses = StudentRepository.class)
 @ComponentScan(basePackageClasses = StudentService.class)
-
 public class CrudSpringApplication {
 
 	public static void main(String[] args) {

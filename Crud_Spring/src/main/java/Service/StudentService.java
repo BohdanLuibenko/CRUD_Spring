@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import static Service.StudentEntityTransformer.toStudentEntity;
 import Entity.StudentEntity;
 import Repository.StudentRepository;
 
@@ -13,15 +14,6 @@ public class StudentService {
 	@Autowired
 	private StudentRepository studentRepository;
 
-	public ResponseEntity creatingOne(StudentEntity student) {
-		try {
-			studentRepository.save(student);
-			return ResponseEntity.ok("ok");
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body("bad");
-		}
-	}
-
 	public ResponseEntity getAll() {
 		try {
 			return ResponseEntity.ok(studentRepository.findAll());
@@ -30,7 +22,7 @@ public class StudentService {
 		}
 	}
 
-	public ResponseEntity getOne(Long id) {
+	public ResponseEntity get(Long id) {
 		try {
 			return ResponseEntity.ok(studentRepository.findById(id));
 		} catch (Exception e) {
@@ -38,19 +30,28 @@ public class StudentService {
 		}
 	}
 
-	public ResponseEntity updateOne(Long id, StudentEntity student) {
-		StudentEntity changingStudent = studentRepository.findById(id).get();
-		changingStudent.setName(student.getName());
-		changingStudent.setLastname(student.getLastname());
-		changingStudent.setMidlename(student.getMidlename());
+	public ResponseEntity create(StudentEntity student) {
 		try {
-			return ResponseEntity.ok(studentRepository.save(changingStudent));
+			studentRepository.save(student);
+			return ResponseEntity.ok("ok");
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body("bad");
+		}
+	}
+	
+	public ResponseEntity update(Long id, StudentEntity newStudent) {
+		StudentEntity student = studentRepository.findById(id).get();
+
+		try {
+			return ResponseEntity.ok(studentRepository.save(
+					toStudentEntity(newStudent.getId(),
+							newStudent.getMiddlename(), newStudent.getLastname(), student)));
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body("bad");
 		}
 	}
 
-	public ResponseEntity deleteOne(Long id) {
+	public ResponseEntity delete(Long id) {
 		try {
 			studentRepository.deleteById(id);
 			return ResponseEntity.ok("deleted " + id);

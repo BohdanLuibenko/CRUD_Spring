@@ -10,26 +10,27 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import Entity.StudentEntity;
 import Service.StudentService;
+import lombok.RequiredArgsConstructor;
 
-@Controller
+@RestController
 @RequestMapping("/student")
-
+@RequiredArgsConstructor
 public class StudentControler {
 
-	@Autowired
-	private StudentService studentService;
+	private final StudentService studentService;
 
 	@PostMapping
-	public ResponseEntity createOne(@RequestBody StudentEntity student) {
-		return studentService.creatingOne(student);
+	public ResponseEntity create(@RequestBody StudentEntity student) {
+		return studentService.create(student);
 	}
 
 	@GetMapping
-	public ResponseEntity getOne(@RequestParam Long id) {
-		return studentService.getOne(id);
+	public ResponseEntity get(@RequestParam Long id) {
+		return studentService.get(id);
 	}
 
 	@GetMapping("/all")
@@ -37,13 +38,13 @@ public class StudentControler {
 		return studentService.getAll();
 	}
 	@PutMapping
-	public ResponseEntity updateOne(@RequestParam Long id,@RequestBody StudentEntity student)
+	public ResponseEntity update(@RequestParam Long id,@RequestBody StudentEntity student)
 	{
-		return studentService.updateOne(id, student);
+		return studentService.update(id, student);
 	}
 	@DeleteMapping
-	public ResponseEntity deleteOne(@RequestParam Long id)
+	public ResponseEntity delete(@RequestParam Long id)
 	{
-		return studentService.deleteOne(id);
+		return studentService.delete(id);
 	}
 }
