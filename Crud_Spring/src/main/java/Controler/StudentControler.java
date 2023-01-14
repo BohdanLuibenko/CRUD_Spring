@@ -2,7 +2,6 @@ package Controler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import Entity.StudentEntity;
+import Repository.StudentRepository;
 import Service.StudentService;
 import lombok.RequiredArgsConstructor;
 
@@ -22,29 +22,31 @@ import lombok.RequiredArgsConstructor;
 public class StudentControler {
 
 	private final StudentService studentService;
+	@Autowired
+	private StudentRepository studentRepository;
 
 	@PostMapping
 	public ResponseEntity create(@RequestBody StudentEntity student) {
-		return studentService.create(student);
+		return ResponseEntity.ok(studentRepository.save(studentService.create(student)));
 	}
 
 	@GetMapping
 	public ResponseEntity get(@RequestParam Long id) {
-		return studentService.get(id);
+		return ResponseEntity.ok(studentService.get(id));
 	}
 
 	@GetMapping("/all")
 	public ResponseEntity getAll() {
-		return studentService.getAll();
+		return ResponseEntity.ok(studentService.getAll());
 	}
+
 	@PutMapping
-	public ResponseEntity update(@RequestParam Long id,@RequestBody StudentEntity student)
-	{
-		return studentService.update(id, student);
+	public ResponseEntity update(@RequestParam Long id, @RequestBody StudentEntity student) {
+		return ResponseEntity.ok(studentRepository.save(studentService.update(id, student)));
 	}
+
 	@DeleteMapping
-	public ResponseEntity delete(@RequestParam Long id)
-	{
-		return studentService.delete(id);
+	public ResponseEntity delete(@RequestParam Long id) {
+		return ResponseEntity.ok("Deleted"+studentService.delete(id));
 	}
 }

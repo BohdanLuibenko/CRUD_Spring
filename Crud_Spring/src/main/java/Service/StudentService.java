@@ -1,10 +1,10 @@
 package Service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import static Service.StudentEntityTransformer.toStudentEntity;
 import Entity.StudentEntity;
 import Repository.StudentRepository;
 
@@ -14,49 +14,51 @@ public class StudentService {
 	@Autowired
 	private StudentRepository studentRepository;
 
-	public ResponseEntity getAll() {
+	public List<StudentEntity> getAll() {
 		try {
-			return ResponseEntity.ok(studentRepository.findAll());
+			List<StudentEntity> students = null;
+			for (StudentEntity student : studentRepository.findAll()) {
+				students.add(student);
+			}
+			return students;
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body("bad");
+			return null;
 		}
 	}
 
-	public ResponseEntity get(Long id) {
+	public StudentEntity get(Long id) {
 		try {
-			return ResponseEntity.ok(studentRepository.findById(id));
+			StudentEntity student = studentRepository.findById(id).get();
+			return student;
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body("bad");
+			return null;
 		}
 	}
 
-	public ResponseEntity create(StudentEntity student) {
+	public StudentEntity create(StudentEntity student) {
 		try {
-			studentRepository.save(student);
-			return ResponseEntity.ok("ok");
+			return student;
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body("bad");
+			return null;
 		}
 	}
-	
-	public ResponseEntity update(Long id, StudentEntity newStudent) {
+
+	public StudentEntity update(Long id, StudentEntity newStudent) {
 		StudentEntity student = studentRepository.findById(id).get();
-
 		try {
-			return ResponseEntity.ok(studentRepository.save(
-					toStudentEntity(newStudent.getId(),
-							newStudent.getMiddlename(), newStudent.getLastname(), student)));
+			return StudentEntityTransformer.checkforNulls(newStudent);
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body("bad");
+			return null;
 		}
 	}
 
-	public ResponseEntity delete(Long id) {
+	public StudentEntity delete(Long id) {
 		try {
+			StudentEntity student = studentRepository.findById(id).get();
 			studentRepository.deleteById(id);
-			return ResponseEntity.ok("deleted " + id);
+			return student;
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body("bad");
+			return null;
 		}
 	}
 }
